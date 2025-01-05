@@ -1,4 +1,7 @@
-# MyAWS #
+#Azure subscription
+terraform.tf
+
+# MyAzure #
 /Python/global_templates/global/static/global/images/
 /Python/MyAWS/local_settings.py
 
