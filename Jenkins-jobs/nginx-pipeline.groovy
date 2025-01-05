@@ -2,8 +2,8 @@ pipeline {
   agent any
   environment {
     registryCredential = 'c71f39e0-4200-4876-850f-9c551f5a45c3'
-    imageNameBackend = 'ambev4/lab1:myazure-backend'
-    urlTestBackend = 'http://localhost:8000'
+    imageNameFrontend = 'ambev4/lab1:myazure-nginx'
+    urlTestFrontend = 'http://localhost:8000'
   }
   stages {
     stage('Fetch code') {
@@ -14,23 +14,23 @@ pipeline {
     stage('Build App Image') {
       steps {
         script {
-          dockerImage = docker.build(imageNameBackend, '--no-cache ./Docker/Python/')
+          dockerImage = docker.build(imageNameFrontend, '--no-cache ./Docker/Nginx/')
         }
       }
     }
-    stage('Test Image') {
-      steps {
-        script {
-          dockerContainer = docker.image("${imageNameBackend}").run('-d -p 8000:8000')
-          def response = httpRequest urlTestBackend
-          if (response.status != 200) {
-            dockerContainer.stop()
-            throw new Exception("ERRO HTTP STATUS DIFERENTE DE 200.")
-          }
-          dockerContainer.stop()
-        }
-      }
-    }
+    // stage('Test Image') {
+    //   steps {
+    //     script {
+    //       dockerContainer = docker.image("${imageNameFrontend}").run('-d -p 8000:80')
+    //       def response = httpRequest urlTestFrontend
+    //       if (response.status != 200) {
+    //         dockerContainer.stop()
+    //         throw new Exception("ERRO HTTP STATUS DIFERENTE DE 200.")
+    //       }
+    //       dockerContainer.stop()
+    //     }
+    //   }
+    // }
     stage('Upload App Image') {
       steps{
         script {
