@@ -3,6 +3,7 @@
     <img src="{% static 'global/static/global/images/foto1.jpg' %}">
 </div>
 <div class="post_body2">
+    <p><h3 class="titulo-post">Descrição Pessoal</h3></p>
     <p>{{ posts.descricao_pessoal }}</p>
     <p>
         <a href="https://www.linkedin.com/in/lucas-pereira-barbosa-64690220a" target="_blank">
@@ -22,32 +23,29 @@
     <img src="{% static 'global/static/global/images/Diagrama-ambiente-aws.png' %}">
 </div>
 <div class="post_body4">
+    <p><h3 class="titulo-post">Projeto anterior: Primeira tentativa</h3></p>
+    <p>
+        {{ posts.descricao_projeto }}
+    </p>
+</div>
+<div class="post_body5">
+</div>
+<div class="post_body6">
+    <h3 class="titulo-post">Projeto: MyAzure</h3>
+    <b>Tecnologias utilizadas:</b> Cloud Azure, Container Apps (Azure), Terraform, Git, Jenkins, Amazon S3, Docker, Nginx, Django, Python, HTML e CSS<br>
+    <b>Skills para:</b> DevOps, SRE, Arquiteto Cloud<br>
     <p>
         {{ posts.descricao_ambiente }}
     </p>
 </div>
-<div class="post_body5">
-    <pre><code class="language-python">
-        def saudacao(nome):
-        """Função para saudar o usuário"""
-        return f"Olá, {nome}!"
 
-        def somalista(lista):
-            """Função para calcular a soma dos elementos da lista"""
-            return sum(lista)
-            def saudacao(nome):
-        """Função para saudar o usuário"""
-        return f"Olá, {nome}!"
-
-        def somalista(lista):
-            """Função para calcular a soma dos elementos da lista"""
-            return sum(lista)
-            def saudacao(nome):
-        """Função para saudar o usuário"""
-        return f"Olá, {nome}!"
+<div class="post_body7">
+    <pre><code>
+        {{ posts.script_terraform }}
+            
         </code></pre>
     </div>
-<div class="post_body6">
+<div class="post_body8">
     <p>
         {{ posts.descricao_terraform }}
     </p>

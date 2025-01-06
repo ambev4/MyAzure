@@ -1,26 +1,98 @@
 posts = {
         "descricao_pessoal": "Há 14 anos atuando no mercado de TI, \
         formado em Engenharia da Computação na faculdade Anhanguera em 2017.\
-        Dediquei os últimos 2 anos em estudo de arquitetura de cloud, \
-        IaC e Python, o que me renderam uma certificação AWS Architect Associate \
-        no ano de 2023. Agora como próximo desafio tenho focado meus estudos \
-        em Terraform com objetivo de conquistar mais uma certificação, \
-        consolidando ainda mais a carreira profissional de TI.",
+        Dediquei os últimos 3 anos em estudo de arquitetura de cloud AWS e Azure, \
+        IaC (Terraform), Conteinerização de aplicações (Docker), Pipeline CI/CD (Git e Jenkins) e Python. \
+        No ano de 2023 conquistei a certificação AWS Architect Associate e em \
+        2024 a HashiCorp Terraform Associate. Busco manter um rítmo constante de aprendizado, \
+        seja em novas tecnologias ou aprofundando ainda mais em conceitos já conhecidos.",
         
-        "descricao_ambiente": "O diagrama ao lado ilustra o ambiente criado \
-        na AWS no qual este site de portifólio está rodando, estou mantendo \
-        ele sempre atualizado com as alterações que são feitas. \
-        Procurei simular o mais próximo possível de um ambiente corporativo \
-        dentro das limitações do free tier. Tanto a VPC, quanto o uso das \
-        duas AZs com suas respectivas plublic subnets foram criadas com a \
-        intenção de habilitar futuro escalonamento e alta disponibilidade, \
-        o uso das EC2 na public subnet foi necesssário pois NAT Gateway \
-        até o momento não está elegível no free tier. O IP CIDR utilizado da \
-        VPC foi o 10.0.0.0/16, com suas subredes utilizando /24 possibilitando \
-        mais de 250 diferentes redes com mais de 250 IPs disponíveis em cada \
-        uma delas. E por fim um security group foi criado para liberar \
-        acesso SSH do próprio console da AWS, da minha máquina para deploy \
-        e uma regra de HTTP para acessso de todas as origens.",
+        "descricao_projeto": "Inicialmente, eu tinha pensado em uma estrutura mais conservadora para este portifólio, \
+        com um ambiente de rede e EC2 na AWS servindo o conteúdo do site através de um Nginx de \
+        forma monolítica. A estrutura toda seria criada e mantida por um script Terraform, \
+        demonstrando o domínio da ferramenta. Porém esbarrei em algumas questões de custo \
+        para manter este pequeno site rodando da forma que pensei inicialmente na AWS, ao lado \
+        (ou acima se estiver vendo pelo celular) está o diagrama de como foi pensado e construído, \
+        note que eu tinha intenção de criar mais coisas usando a mesma estrutura de rede. \
+        Ao entrar neste dilema, precisei repensar na arquitetura e também na disponibilidade de \
+        free tier oferecido pela AWS e por suas principais concorrentes, foi quando pesquisando \
+        alternativas encontrei o service Container apps da Azure que encaixou perfeitamente pro \
+        objetivo deste portifólio que é demonstrar domínio de tecnologias nas quais busco continuidade \
+        e crescimento na carreira profissional.",
+        
+        "descricao_ambiente": "O projeto deste site tem como objetivo por em prática \
+        os conhecimentos adquiridos principalmente no último ano de estudo alinhando estes \
+        com a experiência profissional obtida no mercado ao longo da carreira. \
+        ",
+
+        "script_terraform": '''
+        # Resource group do projeto
+            resource "azurerm_resource_group" "myazure_rg" {
+              name     = "myazure_rg"
+              location = var.myazure_location
+            }
+            
+            # Criação do ambiente de container apps
+            resource "azurerm_container_app_environment" "myazure_app_env" {
+              name                = "myazure-app-env"
+              location            = var.myazure_location
+              resource_group_name = azurerm_resource_group.myazure_rg.name
+            }
+            
+            # Criação do container de backend
+            resource "azurerm_container_app" "myazure_app_backend" {
+              name                         = "myazure-app-backend"
+              container_app_environment_id = azurerm_container_app_environment.myazure_app_env.id
+              resource_group_name          = azurerm_resource_group.myazure_rg.name
+              revision_mode                = "Single"
+            
+              template {
+                container {
+                  name   = "myazure-app-backend"
+                  image  = "ambev4/lab1:myazure-backend"
+                  cpu    = 0.25
+                  memory = "0.5Gi"
+                }
+              }
+            
+              ingress {
+                allow_insecure_connections = true
+                external_enabled           = false
+                target_port                = 8000
+                traffic_weight {
+                  percentage      = 100
+                  latest_revision = true
+                }
+              }
+            }
+            
+            # Criação do container Nginx com as imagens estáticas
+            resource "azurerm_container_app" "myazure_app_nginx" {
+              name                         = "myazure-app-nginx"
+              container_app_environment_id = azurerm_container_app_environment.myazure_app_env.id
+              resource_group_name          = azurerm_resource_group.myazure_rg.name
+              revision_mode                = "Single"
+            
+              template {
+                container {
+                  name   = "myazure-app-nginx"
+                  image  = "ambev4/lab1:myazure-nginx"
+                  cpu    = 0.25
+                  memory = "0.5Gi"
+                }
+              }
+            
+              ingress {
+                allow_insecure_connections = true
+                external_enabled           = true
+                target_port                = 80
+                traffic_weight {
+                  percentage      = 100
+                  latest_revision = true
+                }
+              }
+            }
+        ''',
         
         "descricao_terraform": "Este foi o script Terraform utilizado para \
         criação e atualização do ambiente citado acima, tudo o que está rodando \
@@ -29,8 +101,5 @@ posts = {
         arquivo de variáveis que utilizei para definição de nomes e de outros \
         tipos de configuração",
         
-        "descricao_ansible": "",
-        "proximos_passos": ["Inclusão do GitHub no processo de deploy", \
-                             "Criação de script Ansible para automatização \
-                                de configuração de servidor"]
+        
 }
