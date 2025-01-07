@@ -1,10 +1,10 @@
 FROM python:alpine
-LABEL "Project"="myaws" "SO"="alpine" "microservice"="true"
+LABEL "Project"="myazure" "SO"="alpine" "microservice"="true"
 
 WORKDIR /
 RUN apk update && apk upgrade
 RUN apk add git
-RUN git clone https://github.com/ambev4/MyAWS.git myawsapp
+RUN git clone https://github.com/ambev4/MyAzure.git myawsapp
 RUN wget https://ambev4-dados.s3.amazonaws.com/myaws-static-repo/local_settings.py -P /myawsapp/Python/MyAWS/
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir django gunicorn
