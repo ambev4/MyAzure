@@ -1,5 +1,6 @@
 #Azure subscription
 terraform.tf
+main_coments.txt
 
 # MyAzure #
 /Python/global_templates/global/static/global/images/

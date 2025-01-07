@@ -2,7 +2,14 @@
 {% load static %}
 <body>
     <div class="header">
-        <h1>Lucas Pereira Barbosa</h1>
+        <h1 class="header_title">Lucas Pereira Barbosa</h1>
+        <div class="header_r">
+            <div class="architect_icon">
+                <a href="https://www.credly.com/badges/cd172eeb-f09d-40ed-b1c1-0a6b8386ff4e" target="_blank">
+                    <img src="{% static 'global/static/global/images/terraform-selo.png' %}">
+                </a>
+            </div>
+        </div>
         <div class="header_r">
             <div class="architect_icon">
                 <a href="https://www.credly.com/badges/b7c251e3-b4cc-4cdc-b90b-34d241ffba29" target="_blank">
@@ -14,7 +21,8 @@
     <div class="line"></div>
     <main class="content">
     {% block bloco_body %} POSTS {% endblock bloco_body %}
-    </main>
+    <br>
+    <br>
     <div class="line"></div>
     <div class="board">
         Lucas Pereira Barbosa
@@ -22,6 +30,6 @@
             <div class="contact">dockerjob@gmail.com</div>
         </div>
     </div>
-  
+</main>
 </body>
 </html>

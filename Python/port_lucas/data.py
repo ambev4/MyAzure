@@ -1,3 +1,17 @@
+from pathlib import Path
+
+TERRAFORM_FOLDER = Path(__file__).parent.parent.parent
+TERRAFORM_FILE = TERRAFORM_FOLDER / 'Terraform' / 'main.tf'
+script_terraform =''
+
+with open(TERRAFORM_FILE, 'r', encoding='utf-8') as arquivo:
+    script_terraform_file = arquivo.readlines()
+
+    for line in script_terraform_file:
+        line += ' '
+        script_terraform += line
+
+
 posts = {
         "descricao_pessoal": "Há 14 anos atuando no mercado de TI, \
         formado em Engenharia da Computação na faculdade Anhanguera em 2017.\
@@ -21,85 +35,29 @@ posts = {
         e crescimento na carreira profissional.",
         
         "descricao_ambiente": "O projeto deste site tem como objetivo por em prática \
-        os conhecimentos adquiridos principalmente no último ano de estudo alinhando estes \
-        com a experiência profissional obtida no mercado ao longo da carreira. \
-        ",
+        os conhecimentos adquiridos principalmente nos últimos anos de estudo alinhando estes \
+        com a experiência profissional obtida no mercado ao longo da carreira. Este front é um HTML e CSS \
+        básicos que escrevi do zero para demonstrar e descrever a estrutura por trás que ele possui já que \
+        frontend não é a minha praia. Uma das coisas que mais gostei deste desafio foi a busca por eficiência, \
+        escalabilidade, automação e redução de custos. Eu realmente levei estas coisas bem a sério neste pequeno \
+        site, procurei criar algo mais caprichado e limpo que eu conseguisse e o resultado foi muito positivo. \
+        Como dito anteriormente, este app roda no Azure Container Apps em dois containers separados, um Nginx \
+        como proxy reverso e também servidor de imagens e CSS e o segundo como backend com os códigos Python, \
+        Django e toda a parte lógica rodando nele de forma inacessível externamente. Investi um bom tempo enxugando \
+        todo o código e as Dockerfiles com o objetivo de deixar tudo o mais enxuto e eficiente possível. Também \
+        desenvolvi pipelines CI/CD no Jenkins e Git para busca, empacotamento, teste, criação das imagens Docker \
+        e upload no Registry de forma automática e estável. E por fim, a estrutura na Azure com os containers \
+        foram criados por script Terraform. Lembrando que todo o código deste projeto incluindo Dockerfiles, \
+        scripts Terraform e pipelines do jenkins estão públicos no meu GitHub.",
 
-        "script_terraform": '''
-        # Resource group do projeto
-            resource "azurerm_resource_group" "myazure_rg" {
-              name     = "myazure_rg"
-              location = var.myazure_location
-            }
-            
-            # Criação do ambiente de container apps
-            resource "azurerm_container_app_environment" "myazure_app_env" {
-              name                = "myazure-app-env"
-              location            = var.myazure_location
-              resource_group_name = azurerm_resource_group.myazure_rg.name
-            }
-            
-            # Criação do container de backend
-            resource "azurerm_container_app" "myazure_app_backend" {
-              name                         = "myazure-app-backend"
-              container_app_environment_id = azurerm_container_app_environment.myazure_app_env.id
-              resource_group_name          = azurerm_resource_group.myazure_rg.name
-              revision_mode                = "Single"
-            
-              template {
-                container {
-                  name   = "myazure-app-backend"
-                  image  = "ambev4/lab1:myazure-backend"
-                  cpu    = 0.25
-                  memory = "0.5Gi"
-                }
-              }
-            
-              ingress {
-                allow_insecure_connections = true
-                external_enabled           = false
-                target_port                = 8000
-                traffic_weight {
-                  percentage      = 100
-                  latest_revision = true
-                }
-              }
-            }
-            
-            # Criação do container Nginx com as imagens estáticas
-            resource "azurerm_container_app" "myazure_app_nginx" {
-              name                         = "myazure-app-nginx"
-              container_app_environment_id = azurerm_container_app_environment.myazure_app_env.id
-              resource_group_name          = azurerm_resource_group.myazure_rg.name
-              revision_mode                = "Single"
-            
-              template {
-                container {
-                  name   = "myazure-app-nginx"
-                  image  = "ambev4/lab1:myazure-nginx"
-                  cpu    = 0.25
-                  memory = "0.5Gi"
-                }
-              }
-            
-              ingress {
-                allow_insecure_connections = true
-                external_enabled           = true
-                target_port                = 80
-                traffic_weight {
-                  percentage      = 100
-                  latest_revision = true
-                }
-              }
-            }
-        ''',
+        "script_terraform": script_terraform,
         
-        "descricao_terraform": "Este foi o script Terraform utilizado para \
-        criação e atualização do ambiente citado acima, tudo o que está rodando \
-        na AWS neste momento é mantido e atualizado diretamente nele, \
-        com excessão da regra SSH para meu IP pessoal, além dele existe um outro \
-        arquivo de variáveis que utilizei para definição de nomes e de outros \
-        tipos de configuração",
-        
+        "descricao_terraform": "Este foi o script Terraform utilizado para criar os recursos na Cloud Azure, \
+        ele também está disponibilizado no GitHub. A infraestrutura necessária para rodar os containers foi \
+        muito menor e mais simples em comparação ao primeiro projeto na AWS, aonde existia subnets, security_groups, \
+        VMs e toda uma lógica para executar comandos dentro das EC2 para subir a aplicação de forma automatizada. \
+        Futuramente pretendo implantar uma infraestrutura um pouco mais complexa dentro das limitações do free \
+        tier da Azure, conforme for fazendo modificações no ambiente elas serão refletidas neste quadro de forma \
+        automatizada buscando diretamente a versão utilizada em \"produção\".  ",
         
 }
